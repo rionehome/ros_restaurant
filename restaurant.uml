@@ -9,7 +9,7 @@ actor customer
 
 cerebrum -> control_system: order to begin mapping
 
-group judge left or right
+group Start ( judge left or right )
     cerebrum -> control_system: order to judge left or right
     control_system --> cerebrum: recieve data left or right
     cerebrum -> sound_system: order to speak data and reason
@@ -17,7 +17,7 @@ group judge left or right
 end
 
 
-group detect ordering human
+group Calling ( detect ordering human )
     cerebrum -> sound_system: detect customer's voice and certinaly angular
     customer -> sound_system: call 'hey ducker, take the order'
     sound_system --> cerebrum: recieve angular data
