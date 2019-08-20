@@ -25,7 +25,10 @@ group Loop (競技遂行のための繰り返し 2回)
         cerebrum -> control_system: 回転を実行
         control_system --> cerebrum: 完了フラグの受信
         cerebrum -> image_system: 手を振っているお客を認識し、Realsenseより深度データを取得する
-        image_system --> cerebrum: 注文者の場所をワールド座標系に変換されたものを受信
+        image_system --> cerebrum: 深度データの受信
+		cerebrum -> control_system: 現在のロボットの向きの取得
+		control_system --> cerebrum: オドメトリデータの受信
+		cerebrum -> cerebrum: 注文者の絶対座標の計算
         cerebrum -> control_system: 地図に注文者の場所を記載
         control_system --> cerebrum: 完了フラグの受信
     end
@@ -37,7 +40,7 @@ group Loop (競技遂行のための繰り返し 2回)
     
     group get order
         cerebrum -> sound_system: オーダーするように発話する
-        customer -> sound_system: 注文を聞きとる
+        customer -> sound_system: 注文者は注文を行う
         sound_system -> cerebrum: 注文の内容を受信 データ構造はJSON
     end
     
