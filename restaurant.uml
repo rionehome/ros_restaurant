@@ -71,4 +71,7 @@ group Loop (競技遂行のための繰り返し 2回)
 
 end
 
+cerebrum -> control_system: 地図作成の中止命令
+control_system -> cerebrum: 作成された地図の保存と完了フラグの受信
+
 @enduml
