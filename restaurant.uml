@@ -7,67 +7,65 @@ participant sound_system
 actor customer
 
 
-cerebrum -> control_system: order to begin mapping
+cerebrum -> control_system: 地図の作成を開始
 
-group Start ( judge left or right )
-    cerebrum -> control_system: order to judge left or right
-    control_system --> cerebrum: recieve data left or right
-    cerebrum -> sound_system: order to speak data and reason
-    sound_system --> cerebrum: recieve data fail or success
+group Start ( ロボットの場所の判定 左右 )
+    cerebrum -> control_system: テーブルの右か左かを判定
+    control_system --> cerebrum: 左右の位置情報の受信
+    cerebrum -> sound_system: 左右の発話と判断理由の発話
+    sound_system --> cerebrum: 完了のフラグの受信
 end
 
+group Loop (競技遂行のための繰り返し 2回)
 
-group Calling ( detect ordering human )
-    cerebrum -> sound_system: detect customer's voice and certinaly angular
-    customer -> sound_system: call 'hey ducker, take the order'
-    sound_system --> cerebrum: recieve angular data
-    cerebrum -> control_system: order to rotate
-    control_system --> cerebrum: recieve data fail or success
-    cerebrum -> image_system: pose detection(catch wavinghand's action) and get depth data from realsense
-    image_system --> cerebrum: recieve position and calcurate abstruct position
-    cerebrum -> control_system: order to edit a position customer
-    control_system --> cerebrum: recieve data fail or success
+    group Calling ( 注文者の検知 )
+        cerebrum -> sound_system: 注文者の方向を音声から判定開始
+        customer -> sound_system: 注文者は'hey ducker, take the order'と発話
+        sound_system --> cerebrum: 方向の数値データを受信
+        cerebrum -> control_system: 回転を実行
+        control_system --> cerebrum: 完了フラグの受信
+        cerebrum -> image_system: 手を振っているお客を認識し、Realsenseより深度データを取得する
+        image_system --> cerebrum: 注文者の場所をワールド座標系に変換されたものを受信
+        cerebrum -> control_system: 地図に注文者の場所を記載
+        control_system --> cerebrum: 完了フラグの受信
+    end
+    
+    group Delivering phas ( 注文者の場所への移動 )
+        cerebrum -> control_system: 注文者の手前に移動
+        control_system --> cerebrum: 完了フラグの受信
+    end
+    
+    group get order
+        cerebrum -> sound_system: オーダーするように発話する
+        customer -> sound_system: 注文を聞きとる
+        sound_system -> cerebrum: 注文の内容を受信 データ構造はJSON
+    end
+    
+    group return counter
+        cerebrum -> control_system: カウンターへ地図をもとに戻る
+        control_system --> cerebrum: 完了フラグの受信
+    end
+    
+    group close arm (アームの進捗によってはやる)
+        cerebrum ->sound_system : listen
+        cerebrum ->control_system : close arm
+    end
+    
+    group deliver object
+        cerebrum -> control_system: 地図をもとに注文者の場所へ移動
+        control_system --> cerebrum: 完了フラグの受信
+    end
+    
+    group hand over object (アームの進捗によってはやる)
+        cerebrum -> control_system : hand over
+        cerebrum -> sound_system : speak order 
+    end
+    
+    group return counter
+        cerebrum -> control_system: カウンターへ地図をもとに戻る
+        control_system --> cerebrum: 完了フラグの受信
+    end
+
 end
-
-
-group 
-
-
-group move to customer
-    cerebrum -> control_system: go forward
-    cerebrum -> control_system: mapping
-    image_system -> cerebrum: return distance 
-    control_system -> cerebrum: return distance
-end
-
-
-group get order
-    cerebrum -> sound_system: speak
-    cerebrum -> sound_system: listen order
-    sound_system -> cerebrum: order list
-end
-
-
-group return counter
-    cerebrum -> control_system :move by mapping
-end
-
-
-group close arm
-    cerebrum ->sound_system : listen
-    cerebrum ->control_system : close arm
-end
-
-
-group deliver object
-    cerebrum -> control_system :move by mapping
-end
-
-
-group hand over order
-    cerebrum -> control_system : hand over
-    cerebrum -> sound_system : speak order 
-end
-
 
 @enduml
