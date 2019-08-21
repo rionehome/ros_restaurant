@@ -38,7 +38,15 @@ group Loop (競技遂行のための繰り返し 2回)
         control_system --> cerebrum: 完了フラグの受信
     end
     
-    group get order
+	
+    group Check oder (注文するかの確認)
+		cerebrum -> sound_system: 注文をするか発話
+		customer -> sound_system: Yes, Noを聞きとる
+		sound_system --> cerebrum: Yes, No データを受け取り
+    end
+
+
+	group get order ( If 注文をする : Yes )
         cerebrum -> sound_system: オーダーするように発話する
         customer -> sound_system: 注文者は注文を行う
         sound_system -> cerebrum: 注文の内容を受信 データ構造はJSON
@@ -54,7 +62,9 @@ group Loop (競技遂行のための繰り返し 2回)
         cerebrum ->control_system : close arm
     end
     
-    group deliver object
+    group deliver object (現状はこちらを最優先)
+        cerebrum -> sound_system: 「品物を乗せてください」と発話する
+		sound_system --> cerebrum: 完了フラグを受信
         cerebrum -> control_system: 地図をもとに注文者の場所へ移動
         control_system --> cerebrum: 完了フラグの受信
     end
@@ -64,7 +74,7 @@ group Loop (競技遂行のための繰り返し 2回)
         cerebrum -> sound_system : speak order 
     end
     
-    group return counter
+	group return counter ( If 注文をする : No )
         cerebrum -> control_system: カウンターへ地図をもとに戻る
         control_system --> cerebrum: 完了フラグの受信
     end
@@ -72,6 +82,6 @@ group Loop (競技遂行のための繰り返し 2回)
 end
 
 cerebrum -> control_system: 地図作成の中止命令
-control_system -> cerebrum: 作成された地図の保存と完了フラグの受信
+control_system --> cerebrum: 作成された地図の保存と完了フラグの受信
 
 @enduml
