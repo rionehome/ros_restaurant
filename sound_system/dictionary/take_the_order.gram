@@ -1,0 +1,4 @@
+#JSGF V1.0;
+grammar take_the_order;
+public <rule> = <command>;
+<noise> = ko | j | ka | r | q | so | su | ho | t | le | ta | lu | w | k | me | ti | a | te | hi | ra | na | ro | wa | ne | s | nu | re | g | ru | to | ku | o | ke | l | f | he | hu | ha | ma | n | wo | yo | ni | li | p | v | x | h | sa | la | se | ya | ki | lo | wu | no | mu | mo | z | tu;

@@ -1,0 +1,1 @@
+Invoking command in '/home/hirose/ros2_ws/ros_restaurant/build/control_system': CMAKE_PREFIX_PATH=/opt/ros/crystal /usr/bin/cmake /home/hirose/ros2_ws/ros_restaurant/control_system -DCMAKE_INSTALL_PREFIX=/home/hirose/ros2_ws/ros_restaurant/install/control_system
