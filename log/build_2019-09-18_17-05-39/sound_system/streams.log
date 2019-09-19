@@ -1,3 +1,0 @@
-Invoking command in '/home/hirose/ros2_ws/ros_restaurant/build/sound_system': CMAKE_PREFIX_PATH=/opt/ros/crystal /usr/bin/cmake /home/hirose/ros2_ws/ros_restaurant/sound_system -DCMAKE_INSTALL_PREFIX=/home/hirose/ros2_ws/ros_restaurant/install/sound_system
-CMake Error: The source directory "/home/hirose/ros2_ws/ros_restaurant/sound_system" does not appear to contain CMakeLists.txt.
-Specify --help for usage, or press the help button on the CMake GUI.
