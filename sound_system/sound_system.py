@@ -3,7 +3,7 @@ from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
 
 from module import module_angular
-from module import module_speak
+from module import module_pico
 from module import module_restaurant
 
 from std_msgs.msg import String
@@ -17,7 +17,8 @@ class SoundSystem(Node):
 
         self.create_subscription(
             String, 'sound_system/command',
-            self.command_callback
+            self.command_callback,
+            qos_profile_sensor_data
         )
 
     # recieve a command {Command, Content}
@@ -28,7 +29,7 @@ class SoundSystem(Node):
 
         # Speak a content
         if 'speak' == command[0].replace('Command:', ''):
-            if module_speak.speak(command[1].replace('Content:', '')) == 1:
+            if module_pico.speak(command[1].replace('Content:', '')) == 1:
                 self.cerebrum_publisher('Return:1,Content:None')
 
         # Sound localization
@@ -57,7 +58,8 @@ class SoundSystem(Node):
     # Publish a result of an action
     def cerebrum_publisher(self, message):
         self.senses_publisher = self.create_publisher(
-            String, 'cerebrum/command'
+            String, 'cerebrum/command',
+            qos_profile_sensor_data
         )
 
         sleep(2)
