@@ -6,7 +6,9 @@ import struct
 import csv
 import datetime
 from pocketsphinx import LiveSpeech, get_model_path
-from . import module_speak
+
+from . import module_pico
+from . import module_beep
 
 counter = 0
 question_dictionary = {}
@@ -18,14 +20,12 @@ file_path = os.path.abspath(__file__)
 model_path = get_model_path()
 
 # Define path
-csv_path = file_path.replace(
-    'module/module_angular.py', 'dictionary/QandA/qanda.csv')
 dict_path = file_path.replace(
     'module/module_angular.py', 'dictionary/take_the_order.dict')
 gram_path = file_path.replace(
     'module/module_angular.py', 'dictionary/take_the_order.gram')
 result_path = file_path.replace(
-    'module/module_angular.py', 'log/angurarQandA-{}.txt').format(str(datetime.datetime.now()))
+    'module/module_angular.py', 'log/angurar-{}.txt').format(str(datetime.datetime.now()))
 # PARAMETERS for sound localization
 PARAMETERS = {
     'DOAANGLE': (21, 0, 'int', 359, 0, 'ro', 'DOA angle. Current value. Orientation depends on build configuration.'),
@@ -34,11 +34,6 @@ PARAMETERS = {
 }
 
 TIMEOUT = 100000
-
-# Make a dictionary from a csv file
-with open(csv_path, 'r') as f:
-    for line in csv.reader(f):
-        question_dictionary.setdefault(str(line[0]), str(line[1]))
 
 # Find angular
 def angular():
@@ -62,13 +57,16 @@ def angular():
 
     while True:
         if read('SPEECHDETECTED') == 1:
+            module_beep.beep("start")
             for phrase in live_speech:
                 #print(phrase)
                 angular = direction()
                 if str(phrase) not in noise_words:
                     if str(phrase) == 'hey ducker take the order':
                         print("angular" + ':' + str(angular), flush=True)
-                        module_speak.speak("yes sir!")
+                        pause()
+                        module_beep.beep("stop")
+                        module_pico.speak("yes sir!")
                         return int(angular)
                 # noise
                 else:
@@ -165,6 +163,22 @@ def setup_live_speech(lm, dict_path, jsgf_path, kws_threshold):
                              dic=dict_path,
                              jsgf=jsgf_path,
                              kws_threshold=kws_threshold)
+
+# Stop lecognition
+def pause():
+
+    ###############
+    #
+    # use this module to stop live speech
+    #
+    # param >> None
+    #
+    # return >> None
+    #
+    ###############
+
+    global live_speech
+    live_speech = LiveSpeech(no_search=True)
 
 if __name__ == '__main__':
     list = angular()

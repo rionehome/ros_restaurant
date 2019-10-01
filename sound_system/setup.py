@@ -13,17 +13,23 @@ setup(
     data_files=[
         ('lib/' + package_name, ['package.xml']),
         ('lib/' + package_name+'/module',
-         ['module/module_speak.py',
+         ['module/module_pico.py',
           'module/module_angular.py',
-          'module/module_restaurant.py'
+          'module/module_restaurant.py',
+          'module/module_beep.py'
           ]),
-        ('lib/sound/dictionary/',
+        ('lib/sound_system/dictionary/',
          ['dictionary/take_the_order.dict',
           'dictionary/take_the_order.gram',
           'dictionary/yes_no.dict',
           'dictionary/yes_no.gram',
           'dictionary/restaurant.dict',
           'dictionary/restaurant.gram'
+          ]),
+        ('lib/sound_system/beep/',
+         ['beep/speech.wav',
+          'beep/start.wav',
+          'beep/stop.wav'
           ]),
         ('lib/sound_system/log',
             ['log/log.txt'])

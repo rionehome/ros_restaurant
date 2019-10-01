@@ -1,7 +1,8 @@
 import os
 from pocketsphinx import LiveSpeech, get_model_path
 
-from .import module_speak
+from . import module_pico
+from . import module_beep
 
 import datetime
 from time import sleep
@@ -50,11 +51,11 @@ def restaurant(when):
     if when == "first":
             start_sentence = "Do you want me to take orders ?"
             print("\n---------------------------------\n",start_sentence,"\n---------------------------------\n")
-            module_speak.speak(start_sentence)
+            module_pico.speak(start_sentence)
 
             # Detect yes or no
             setup_live_speech(False, yes_no_dic_path, yes_no_gram_path, 1e-20)
-            sleep(1)
+            module_beep.beep("start")
             for question0 in live_speech:
                 print("\n[*] CONFIRMING ...")
                 #print(question0)
@@ -69,29 +70,33 @@ def restaurant(when):
                     if str(question0) == "yes":
 
                         # Deside order
+                        pause()
+                        module_beep.beep("stop")
                         answer = "Sure, please order me."
                         print("\n---------------------------------\n",answer,"\n---------------------------------\n")
-                        pause()
-                        module_speak.speak(answer)
+                        module_pico.speak(answer)
                         break
 
                     elif str(question0) == "no":
 
                         # Fail, Ask yes-no question
+                        pause()
+                        module_beep.beep("stop")
                         answer = "Sorry."
                         print("\n---------------------------------\n",answer,"\n---------------------------------\n")
-                        pause()
-                        module_speak.speak(answer)
+                        module_pico.speak(answer)
                         return "restart"
 
                     elif str(question0) == "please say again":
 
-                        print("\n---------------------------------\n",start_sentence,"\n---------------------------------\n")
                         pause()
-                        module_speak.speak(start_sentence)
-
+                        module_beep.beep("stop")
+                        print("\n---------------------------------\n",start_sentence,"\n---------------------------------\n")
+                        module_pico.speak(start_sentence)
+                        module_beep.beep("start")
                         # Ask yes-no question
                         setup_live_speech(False, yes_no_dic_path, yes_no_gram_path, 1e-20)
+                        noise_words = read_noise_word(yes_no_gram_path)
 
                 # noise
                 else:
@@ -101,9 +106,8 @@ def restaurant(when):
 
 
             setup_live_speech(False, order_dic_path, order_gram_path, 1e-10)
-            sleep(1)
+            module_beep.beep("start")
             for question1 in live_speech:
-                #sleep(1)
                 print("\n[*] PREASE ORDER ...")
                 #print(question1)
 
@@ -115,19 +119,20 @@ def restaurant(when):
                     file = open(result_path, 'a')
                     file.write(str(datetime.datetime.now())+": "+str(question1)+"\n")
                     file.close()
+                    pause()
+                    module_beep.beep("stop")
                     print("\n-----------your order-----------\n",str(question1),"\n---------------------------------\n")
                     food = str(question1).replace("I want ","")
                     sentence = "Do you want " + str(food) + " ?"
                     print("\n---------------------------------\n",sentence,"\n---------------------------------\n")
 
                     # Ask yes-no question
-                    pause()
-                    module_speak.speak(sentence)
-
+                    module_pico.speak(sentence)
                     # Detect yes or no
                     setup_live_speech(False, yes_no_dic_path, yes_no_gram_path, 1e-10)
                     flag = True
                     while flag:
+                        module_beep.beep("start")
                         for question2 in live_speech:
                             print("\n[*] CONFIRM YOUR OREDER ...")
                             #print(question2)
@@ -143,20 +148,24 @@ def restaurant(when):
                                 if str(question2) == "yes":
 
                                     # Deside order
+                                    pause()
+                                    module_beep.beep("stop")
                                     answer = "Sure, I will bring " + str(food) + "."
                                     print("\n---------------------------------\n",answer,"\n---------------------------------\n")
-                                    pause()
-                                    module_speak.speak(answer)
+                                    module_pico.speak(answer)
                                     return str(food)
 
                                 elif str(question2) == "no":
 
                                     # Fail, oreder one more time
+                                    pause()
+                                    module_beep.beep("stop")
                                     answer = "Sorry, prease order one more."
                                     print("\n---------------------------------\n",answer,"\n---------------------------------\n")
-                                    pause()
-                                    module_speak.speak(answer)
+                                    module_pico.speak(answer)
+                                    module_beep.beep("start")
                                     setup_live_speech(False, order_dic_path, order_gram_path, 1e-10)
+                                    noise_words = read_noise_word(yes_no_gram_path)
                                     flag = False
                                     break
 
@@ -164,11 +173,13 @@ def restaurant(when):
                                 elif str(question2) == "please say again":
 
                                     pause()
+                                    module_beep.beep("stop")
                                     print("\n---------------------------------\n",sentence,"\n---------------------------------\n")
-                                    module_speak.speak(sentence)
-
+                                    module_pico.speak(sentence)
+                                    module_beep.beep("start")
                                     # Ask yes-no question to barman
                                     setup_live_speech(False, yes_no_dic_path, yes_no_gram_path, 1e-10)
+                                    noise_words = read_noise_word(yes_no_gram_path)
 
                             # noise
                             else:
@@ -188,7 +199,8 @@ def restaurant(when):
             setup_live_speech(False, yes_no_dic_path, yes_no_gram_path, 1e-20)
             end_sentence = "Did you take items ?"
             print("\n---------------------------------\n",end_sentence,"\n---------------------------------\n")
-            module_speak.speak(end_sentence)
+            module_pico.speak(end_sentence)
+            module_beep.beep("start")
             for question3 in live_speech:
                 print("\n[*] CONFIRM OREDER ...")
                 #print(question3)
@@ -203,34 +215,34 @@ def restaurant(when):
                     if str(question3) == "yes":
 
                         # Deside order
+                        pause()
+                        module_beep.beep("stop")
                         answer = "Thank you."
                         print("\n---------------------------------\n",answer,"\n---------------------------------\n")
-                        pause()
-                        module_speak.speak(answer)
+                        module_pico.speak(answer)
                         return 1
 
                     elif str(question3) == "no":
 
                         # Fail, Ask yes-no question
+                        pause()
+                        module_beep.beep("stop")
                         answer = "Sorry, please take this item."
                         print("\n---------------------------------\n",answer,"\n---------------------------------\n")
-                        pause()
-                        module_speak.speak(answer)
-
-                        # Ask yes-no question
-                        print("\n---------------------------------\n",end_sentence,"\n---------------------------------\n")
-                        module_speak.speak(end_sentence)
+                        module_pico.speak(answer)
                         setup_live_speech(False, yes_no_dic_path, yes_no_gram_path, 1e-20)
+                        noise_words = read_noise_word(yes_no_gram_path)
+                        break
 
 
                     elif str(question3) == "please say again":
 
                         # Ask yes-no question
-                        print("\n---------------------------------\n",end_sentence,"\n---------------------------------\n")
                         pause()
-                        del(live_speech)
-                        module_speak.speak(end_sentence)
+                        module_beep.beep("stop")
                         setup_live_speech(False, yes_no_dic_path, yes_no_gram_path, 1e-20)
+                        noise_words = read_noise_word(yes_no_gram_path)
+                        break
 
                 # noise
                 else:
@@ -305,11 +317,11 @@ def setup_live_speech(lm, dict_path, jsgf_path, kws_threshold):
                              kws_threshold=kws_threshold)
 
 if __name__ == '__main__':
-    last_order = restaurant("first")
+    last_order = restaurant("end")
     if str(last_order) != "restart" and last_order != 1:
         print("Simulation: Going back to the first position ...")
         sleep(3)
         last_sentence = "order is "+last_order+", please put "+last_order+" on me, thank you."
 
         print(last_sentence)
-        module_speak.speak(last_sentence)
+        module_pico.speak(last_sentence)
