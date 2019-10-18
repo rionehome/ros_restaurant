@@ -165,7 +165,7 @@ def restaurant(when):
                                     module_pico.speak(answer)
                                     module_beep.beep("start")
                                     setup_live_speech(False, order_dic_path, order_gram_path, 1e-10)
-                                    noise_words = read_noise_word(yes_no_gram_path)
+                                    noise_words = read_noise_word(order_gram_path)
                                     flag = False
                                     break
 
