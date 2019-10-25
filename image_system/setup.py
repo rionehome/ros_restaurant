@@ -1,5 +1,6 @@
 from setuptools import setup
 
+
 package_name = 'image_system'
 
 setup(
@@ -7,30 +8,32 @@ setup(
     version='0.0.1',
     packages=[],
     py_modules=[
-        'image_system'
+        "talker",
+        "listener"
+    ],
+    data_files=[
+        ('share/' + package_name, ['package.xml', 'test.launch.py']),
     ],
     install_requires=['setuptools'],
-    data_files=[
-        ('lib/' + package_name, ['package.xml'])
-    ],
     zip_safe=True,
-    author='ItoMasaki,MatsudaYamato',
-    author_email='is0449sh@ed.ritsumei.ac.jp,is0476hv@ed.ritsumei.ac.jp',
-    maintainer='ItoMasaki,MatsudaYamato',
-    maintainer_email='is0449sh@ed.ritsumei.ac.jp,is0476hv@ed.ritsumei.ac.jp',
-    keywords=['ROS2'],
+    author='MATSUDAYamato', 'YAMAMOTOYuuka',
+    author_email='is0476hv@ed.ritsumei.ac.jp', 'rr0113ke@ed.ritsumei.ac.jp',
+    maintainer='MATSUDAYamato',
+    maintainer_email='is0476hv@ed.ritsumei.ac.jp',
+    keywords=['ROS'],
     classifiers=[
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
         'Topic :: Software Development',
     ],
-    description='image package for SPR',
+    description='Examples of minimal publishers using rospy.',
     license='Apache License, Version 2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'image_system = image_system:main',
+            'talker=talker:main',
+            'listener=listener:main',
         ],
     },
 )
