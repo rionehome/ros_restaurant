@@ -1,7 +1,7 @@
 from setuptools import setup
 
 
-package_name = 'image'
+package_name = 'image_system'
 
 setup(
     name=package_name,
