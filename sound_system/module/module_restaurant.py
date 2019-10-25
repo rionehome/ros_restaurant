@@ -193,6 +193,17 @@ def restaurant(when):
                     print("\n[*] PREASE ORDER ...")
                     pass
 
+    elif when == "mid":
+        last_sentence = "order is "+str(food)+", please put "+str(food)+" on me, thank you."
+        file = open(result_path, 'a')
+        file.write(str(datetime.datetime.now()) + ": " + str(last_sentence) + "\n")
+        file.close()
+        print("\n---------------------------------\n", last_sentence, "\n---------------------------------\n")
+        module_pico.speak(last_sentence)
+        sleep(7)
+        print("\n---------------------------------\nMoving\n---------------------------------\n")
+        return 1
+
     elif when == "end":
         # Detect yes or no
         while True:

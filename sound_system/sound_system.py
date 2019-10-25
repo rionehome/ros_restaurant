@@ -51,6 +51,9 @@ class SoundSystem(Node):
                 else:
                     # content is food's name
                     self.cerebrum_publisher('Retern:0,Content:'+str(answer))
+            elif str(when) == "mid":
+                if answer == 1:
+                    self.cerebrum_publisher('Retern:0,Content:None')
             elif str(when) == "end":
                 if answer == 1:
                     self.cerebrum_publisher('Retern:0,Content:None')
