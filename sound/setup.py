@@ -20,14 +20,14 @@ setup(
     author_email='is0476hv@ed.ritsumei.ac.jp', 'rr0113ke@ed.ritsumei.ac.jp',
     maintainer='MATSUDAYamato',
     maintainer_email='is0476hv@ed.ritsumei.ac.jp',
-    keywords=['ROS'],
+    keywords=['ROS2'],
     classifiers=[
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
         'Topic :: Software Development',
     ],
-    description='Examples of minimal publishers using rospy.',
+    description='sound system is made using ROS2.',
     license='Apache License, Version 2.0',
     tests_require=['pytest'],
     entry_points={
