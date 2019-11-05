@@ -12,7 +12,7 @@ setup(
         "listener"
     ],
     data_files=[
-        ('share/' + package_name, ['package.xml', 'test.launch.py']),
+        ('share/' + package_name, ['package.xml']),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
