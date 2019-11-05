@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 
-from std_msgs.msg import String
+from rione_msgs.msg import Command
 
 from time import sleep
 
@@ -9,11 +9,15 @@ class CIC(Node):
     def __init__(self):
         super().__init__("CIC")
 
-        self.create_subscription(String, "/cerebrum/command", self.receive, 10)
+        self.publisher2control = self.create_publisher(Command, "/control_system/command", 10)
+        self.publisher2sound   = self.create_publisher(Command, "/sound_system/command",   10)
+        self.publisher2image   = self.create_publisher(Command, "/image_system/command",   10)
+
+        self.create_subscription(Command, "/cerebrum/command", self.receive, 10)
 
         self.timer = self.create_timer(2.0, self.state)
 
-        self.data = String()
+        self.data = Command()
 
         sleep(1)
 
@@ -43,7 +47,8 @@ class CIC(Node):
             break
 
     def receive(self, msg):
-        flag = msg.data.split(",")[0].split(":")[1]
+        print(msg)
+        flag = msg.flag
 
         number = 0
         tasks = None
@@ -51,22 +56,28 @@ class CIC(Node):
         for number, task in self.tasks.items():
             break
 
-        if flag == task[1]:
+        if msg.command == task[1]:
             print(self.tasks.pop(self.executing), flush=True)
 
-    def send_with_content(self, topic, Command, Content):
-        self.sound_system_pub = self.create_publisher(
-            String,
-            "/"+topic+"_system/command",
-            10
-        )
+    def send_with_content(self, topic, command, content):
 
-        sleep(1)
+        msg = Command()
+        msg.flag    = True
+        msg.command = command
+        msg.content = content
+        msg.sender  = "cerebrum"
 
-        print("send to /{0}_system/command Command:{1} Content:{2}".format(topic, Command, Content), flush=True)
+        if topic == "control":
+            self.publisher2control.publish(msg)
 
-        self.data.data = "Command:" + Command + ",Content:" + str(Content) + ":cerebrum"
-        self.sound_system_pub.publish(self.data)
+        elif topic == "sound":
+            self.publisher2sound.publish(msg)
+
+        elif topic == "image":
+            self.publisher2image.publish(msg)
+
+        else:
+            print("[!] Error : No Topic Name {0}".format(topic), flush=True)
 
 def main():
     rclpy.init()
