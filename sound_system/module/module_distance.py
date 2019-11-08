@@ -23,8 +23,7 @@ def beep(number):
     ###############
 
     number = number.split("|")
-    place = ""
-    if number[0] > number[1]:place="right"
+    if float(number[0]) < float(number[1]):place="right"
     else:place="left"
     right_or_left = "I'm at " + place +" side, because " \
                     "distance from right wall is {} meters" \
@@ -42,5 +41,5 @@ def beep(number):
 
 
 if __name__ == '__main__':
-    beep("15.3|2.5")
+    beep("15.3|17.5")
 
