@@ -2,12 +2,12 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
 
+from module import module_distance
 from module import module_angular
 from module import module_pico
 from module import module_restaurant
 
-from std_msgs.msg import String
-from time import sleep
+from rione_msgs.msg import Command
 
 class SoundSystem(Node):
     def __init__(self):
@@ -16,63 +16,84 @@ class SoundSystem(Node):
         self.command = None
 
         self.create_subscription(
-            String, 'sound_system/command',
+            Command, 'sound_system/command',
             self.command_callback,
-            qos_profile_sensor_data
+            10
+        )
+
+        self.senses_publisher = self.create_publisher(
+            Command,
+            'cerebrum/command',
+            10
+        )
+
+        self.angular_publisher = self.create_publisher(
+            Command,
+            'control_system/command',
+            10
         )
 
     # recieve a command {Command, Content}
     def command_callback(self, msg):
 
-        self.command = msg.data
-        command = msg.data.split(',')
-
         # Speak a content
-        if 'speak' == command[0].replace('Command:', ''):
-            if module_pico.speak(command[1].replace('Content:', '')) == 1:
-                self.cerebrum_publisher('Return:1,Content:None')
+        if 'speak' == msg.command:
+            if module_pico.speak(msg.content) == 1:
+                self.cerebrum_publisher(0,"speak")
+
+        # Detect right or left
+        if 'distance' == msg.command:
+            content = msg.content
+            if module_distance.distance(content) == 1:
+                self.cerebrum_publisher(0,"distance")
 
         # Sound localization
-        if 'angular' == command[0].replace('Command:', ''):
+        if 'angular' == msg.command:
             self.angular = module_angular.angular()
             if self.temp_angular > 0:
-                # "Return:1,Content:angular"
-                self.cerebrum_publisher(
-                    'Return:1,Content:'+str(self.angular))
+                self.turnnig_publisher(
+                    1,"angular",str(self.angular))
 
         # Start restaurant, content is first or end
         when = ""
-        if 'restaurant' == command[0].replace('Command:', ''):
-            when = command[1].replace('Content:', '')
+        if 'restaurant' == msg.command:
+            when = msg.content
             answer = module_restaurant.restaurant(when)
             if str(when) == "first":
                 if str(answer) == "restart":
-                    self.cerebrum_publisher('Retern:0,Content:restart')
+                    self.cerebrum_publisher(0,"restaurant_first","restart")
                 else:
                     # content is food's name
-                    self.cerebrum_publisher('Retern:0,Content:'+str(answer))
+                    self.cerebrum_publisher(0,"restaurant_first",str(answer))
             elif str(when) == "mid":
                 if answer == 1:
-                    self.cerebrum_publisher('Retern:0,Content:None')
+                    self.cerebrum_publisher(0,"restaurant_mid")
             elif str(when) == "end":
                 if answer == 1:
-                    self.cerebrum_publisher('Retern:0,Content:None')
+                    self.cerebrum_publisher(0,"restaurant_end")
 
     # Publish a result of an action
-    def cerebrum_publisher(self, message):
-        self.senses_publisher = self.create_publisher(
-            String, 'cerebrum/command',
-            qos_profile_sensor_data
-        )
+    def cerebrum_publisher(self, flag, command, content=""):
 
-        sleep(2)
-
-        _trans_message = String()
-        _trans_message.data = message
+        _trans_message = Command()
+        _trans_message.flag = flag
+        _trans_message.command = command
+        _trans_message.content = content
+        _trans_message.sender = "sound"
 
         self.senses_publisher.publish(_trans_message)
         # self.destroy_publisher(self.senses_publisher)
 
+    # Publish a result of an action
+    def turnnig_publisher(self, flag, command, content):
+        _trans_message = Command()
+        _trans_message.flag = flag
+        _trans_message.command = command
+        _trans_message.content = content
+        _trans_message.sender = "sound"
+
+        self.angular_publisher.publish(_trans_message)
+        # self.destroy_publisher(self.senses_publisher)
 
 def main():
     rclpy.init()
