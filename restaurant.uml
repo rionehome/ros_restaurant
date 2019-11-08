@@ -7,29 +7,23 @@ participant sound_system
 actor customer
 
 
-cerebrum -> control_system: 地図の作成を開始
+cerebrum -> control_system: start_localization
 
-group Start ( ロボットの場所の判定 左右 )
-    cerebrum -> control_system: テーブルの右か左かを判定
-    control_system --> cerebrum: 左右の位置情報の受信
-    cerebrum -> sound_system: 左右の発話と判断理由の発話
-    sound_system --> cerebrum: 完了のフラグの受信
+group Start ( judge position )
+	cerebrum -> control_system: get_distance
+	control_system --> sound_system: speak right|left
+	sound_system -> cerebrum: finish judge_position
 end
 
 group Loop (競技遂行のための繰り返し 2回)
 
-    group Calling ( 注文者の検知 )
+	group Calling ( detect order )
         cerebrum -> sound_system: 注文者の方向を音声から判定開始
         customer -> sound_system: 注文者は'hey ducker, take the order'と発話
-        sound_system --> cerebrum: 方向の数値データを受信
-        cerebrum -> control_system: 回転を実行
-        control_system --> cerebrum: 完了フラグの受信
-        cerebrum -> image_system: 手を振っているお客を認識し、Realsenseより深度データを取得する
-        image_system --> cerebrum: 深度データの受信
-		cerebrum -> control_system: 現在のロボットの向きの取得
-		control_system --> cerebrum: オドメトリデータの受信
-		cerebrum -> cerebrum: 注文者の絶対座標の計算
-        cerebrum -> control_system: 地図に注文者の場所を記載
+		sound_system --> control_system: turn angular
+		control_system -> image_system: 手を振っているお客を認識し、Realsenseより深度データを取得する
+		image_system -> control_system: お客様の位置の深度データを送信
+		control_system -> control_system: 地図に注文者の場所を記載
         control_system --> cerebrum: 完了フラグの受信
     end
     
@@ -54,34 +48,29 @@ group Loop (競技遂行のための繰り返し 2回)
     
     group return counter
         cerebrum -> control_system: カウンターへ地図をもとに戻る
-        control_system --> cerebrum: 完了フラグの受信
-    end
-    
-    group close arm (アームの進捗によってはやる)
-        cerebrum ->sound_system : listen
-        cerebrum ->control_system : close arm
+		control_system -> sound_system: 品物を置くように発話
+		sound_system -> cerebrum: 終了フラグ
     end
     
     group deliver object (現状はこちらを最優先)
-        cerebrum -> sound_system: 「品物を乗せてください」と発話する
-		sound_system --> cerebrum: 完了フラグを受信
         cerebrum -> control_system: 地図をもとに注文者の場所へ移動
         control_system --> cerebrum: 完了フラグの受信
     end
-    
-    group hand over object (アームの進捗によってはやる)
-        cerebrum -> control_system : hand over
-        cerebrum -> sound_system : speak order 
-    end
-    
-	group return counter ( If 注文をする : No )
-        cerebrum -> control_system: カウンターへ地図をもとに戻る
-        control_system --> cerebrum: 完了フラグの受信
+
+	group Check oder (受け取ったかの確認)
+        cerebrum -> sound_system: 品物を受け取ったかの確認
+        customer -> sound_system: Yes, Noを聞きとる
+        sound_system --> cerebrum: Yes, No データを受け取り
     end
 
+	group return counter
+        cerebrum -> control_system: カウンターへ地図をもとに戻る
+		control_system -> cerebrum: 終了フラグ
+	end
+    
 end
 
-cerebrum -> control_system: 地図作成の中止命令
-control_system --> cerebrum: 作成された地図の保存と完了フラグの受信
+cerebrum -> control_system: 自己位置推定の停止
+control_system --> cerebrum: 完了フラグの受信
 
 @enduml
