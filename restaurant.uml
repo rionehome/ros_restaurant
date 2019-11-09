@@ -8,6 +8,7 @@ actor customer
 
 
 cerebrum -> control_system: start_localization
+control_system --> cerebrum: 完了フラグ
 
 group Start ( judge position )
 	cerebrum -> control_system: get_distance
