@@ -52,7 +52,7 @@ class SoundSystem(Node):
             self.angular = module_angular.angular()
             if self.temp_angular > 0:
                 self.turnnig_publisher(
-                    1,"angular",str(self.angular))
+                    1,"angular",int(self.angular))
 
         # Start restaurant, content is first or end
         when = ""
