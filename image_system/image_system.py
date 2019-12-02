@@ -51,11 +51,15 @@ class ImageSystem(Node):
 
     # detect waving customer's hand.
     def detect_wavehand(self):
-        
+        pass
     
     # get Realsense's data.
     def get_Realsense(self, msg):
+        pass
         
+
+    def get_image(self, msg):
+        pass
 
 def main():
     rclpy.init()

@@ -9,7 +9,8 @@ setup(
     packages=[],
     py_modules=[
         "talker",
-        "listener"
+        "listener",
+        "image_system"
     ],
     data_files=[
         ('share/' + package_name, ['package.xml']),
@@ -32,6 +33,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'image_system=image_system:main',
             'talker=talker:main',
             'listener=listener:main',
         ],
