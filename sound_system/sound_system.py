@@ -51,15 +51,10 @@ class SoundSystem(Node):
 
         # Sound localization
         if 'angular' == msg.command:
-            print("Receive message from {0} with flag:{1} command:{2} content:{3}".format(
-                    msg.sender, msg.flag, msg.command, msg.content
-                ),
-                flush=True
-            )
-            #self.angular = module_angular.angular()
-            self.turnnig_publisher(True,"turn","0")
-            #if self.temp_angular > 0:
-            #    self.turnnig_publisher(1,"angular",str(self.angular))
+            self.angular = module_angular.angular()
+            if self.temp_angular > 0:
+                self.turnnig_publisher(
+                    1,"angular",int(self.angular))
 
         # Start restaurant, content is first or end
         when = ""
