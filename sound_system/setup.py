@@ -16,7 +16,8 @@ setup(
          ['module/module_pico.py',
           'module/module_angular.py',
           'module/module_restaurant.py',
-          'module/module_beep.py'
+          'module/module_beep.py',
+          'module/module_distance.py'
           ]),
         ('lib/sound_system/dictionary/',
          ['dictionary/take_the_order.dict',

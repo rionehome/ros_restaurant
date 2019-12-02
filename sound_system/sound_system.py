@@ -16,7 +16,8 @@ class SoundSystem(Node):
         self.command = None
 
         self.create_subscription(
-            Command, 'sound_system/command',
+            Command,
+            'sound_system/command',
             self.command_callback,
             10
         )
@@ -44,15 +45,21 @@ class SoundSystem(Node):
         # Detect right or left
         if 'distance' == msg.command:
             content = msg.content
-            if module_distance.distance(content) == 1:
-                self.cerebrum_publisher(0,"distance")
+            self.cerebrum_publisher(False,"get_distance", "none")
+            #if module_distance.distance(content) == 1:
+            #    self.cerebrum_publisher(0,"distance")
 
         # Sound localization
         if 'angular' == msg.command:
-            self.angular = module_angular.angular()
-            if self.temp_angular > 0:
-                self.turnnig_publisher(
-                    1,"angular",str(self.angular))
+            print("Receive message from {0} with flag:{1} command:{2} content:{3}".format(
+                    msg.sender, msg.flag, msg.command, msg.content
+                ),
+                flush=True
+            )
+            #self.angular = module_angular.angular()
+            self.turnnig_publisher(True,"turn","0")
+            #if self.temp_angular > 0:
+            #    self.turnnig_publisher(1,"angular",str(self.angular))
 
         # Start restaurant, content is first or end
         when = ""
@@ -91,6 +98,8 @@ class SoundSystem(Node):
         _trans_message.command = command
         _trans_message.content = content
         _trans_message.sender = "sound"
+
+        print()
 
         self.angular_publisher.publish(_trans_message)
         # self.destroy_publisher(self.senses_publisher)
