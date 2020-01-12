@@ -17,6 +17,7 @@
 
 #include <sensor_msgs/msg/image.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
+#include <geometry_msgs/msg/pose_stamped.hpp>
 #include <rione_msgs/msg/command.hpp>
 
 using namespace std;
@@ -41,6 +42,8 @@ class ImageSystem :
             bool sendCommand(string command, string content, string to);
             // detect customer function
             cv::Point3d detectCustomerPosition(cv::Mat image);
+            // send goal to navigation
+            bool sendGoalPosition(cv::Point3d position);
 
             bool isRaiseYourHand(op::Array<float> poseKeypoints);
             // play shuttor sound
@@ -61,6 +64,8 @@ class ImageSystem :
             pcl::PCLPointCloud2 cloud;
             pcl::PointCloud<pcl::PointXYZRGB> temp_cloud;
 
+            geometry_msgs::msg::PoseStamped customer_position;
+
             // OpenPose
             op::Wrapper opWrapper{op::ThreadManagerMode::Asynchronous};
 
@@ -71,11 +76,13 @@ class ImageSystem :
             rione_msgs::msg::Command msg;
         protected:
             // publish to cerebrum
-            rclcpp::Publisher<rione_msgs::msg::Command>::SharedPtr publisher2cerebrum;
+            rclcpp::Publisher<rione_msgs::msg::Command>::SharedPtr        publisher2cerebrum;
             // publish to sound
-            rclcpp::Publisher<rione_msgs::msg::Command>::SharedPtr publisher2sound;
+            rclcpp::Publisher<rione_msgs::msg::Command>::SharedPtr        publisher2sound;
             // publish to control
-            rclcpp::Publisher<rione_msgs::msg::Command>::SharedPtr publisher2control;
+            rclcpp::Publisher<rione_msgs::msg::Command>::SharedPtr        publisher2control;
+            // publish to navigation
+            rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr publisher2navigation;
         public:
             ImageSystem();
             ~ImageSystem();

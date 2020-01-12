@@ -14,6 +14,7 @@ find_package(pcl_conversions REQUIRED)
 find_package(OpenPose REQUIRED)
 find_package(PCL 1.9 REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
 find_package(rione_msgs REQUIRED)
 find_package(gflags REQUIRED)
 find_package(OpenCV REQUIRED)
@@ -25,6 +26,7 @@ ament_target_dependencies(image_system
     rclcpp
     rione_msgs
     sensor_msgs
+    geometry_msgs
     OpenCV
     cv_bridge
     gflags

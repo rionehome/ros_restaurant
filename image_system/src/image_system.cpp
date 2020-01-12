@@ -61,6 +61,14 @@ ImageSystem::ImageSystem() : Node("image_system") {
         10
     );
 
+    //
+    // PUBLISHER : publish goal data to navigation
+    //
+    publisher2navigation = this->create_publisher<geometry_msgs::msg::PoseStamped>(
+        "move_base_simple/goal",
+        10
+    );
+
     opWrapper.start();
     RCLCPP_INFO(this->get_logger(), "FINISH SETUP");
 
@@ -76,6 +84,7 @@ void ImageSystem::subscribeCommandFromCerebrum(rione_msgs::msg::Command::SharedP
             RCLCPP_INFO(this->get_logger(), "DETECTING CUSTOMER ...");
             playShuttorSound();
             cv::Point3d PersonPosition = detectCustomerPosition(pointcloud_image);
+            sendGoalPosition(PersonPosition);
         }
     }
 }
@@ -205,4 +214,16 @@ bool ImageSystem::sendCommand(string command, string content, string to){
         RCLCPP_WARN(this->get_logger(), "COULD'T SEND MESSAGE");
         return false;
     }
+}
+
+bool ImageSystem::sendGoalPosition(cv::Point3d position){
+    customer_position.header.frame_id    = "map";
+    customer_position.pose.position.x    = position.x;
+    customer_position.pose.position.y    = position.y;
+    customer_position.pose.orientation.z = 1.0;
+    publisher2navigation->publish(customer_position);
+
+    RCLCPP_INFO(this->get_logger(), "SUCCESSED TO SEND GOAL POSITION TO NAVIGATION");
+
+    return true;
 }
