@@ -29,6 +29,11 @@ class restaurant(Node):
             "3": ["sound",     "angular",        "none"],
         }
 
+        self.tasks = {
+            "1": ["cerebrum", "sleep",  "none"    ],
+            "2": ["image",    "detect", "customer"]
+        }
+
         self.executing = "1"
         self.did = "0"
 
