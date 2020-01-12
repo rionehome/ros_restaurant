@@ -160,7 +160,7 @@ bool ImageSystem::isRaiseYourHand(op::Array<float> poseKeypoints){
 
 void ImageSystem::playShuttorSound(){
     // [TODO] You need to change path on your enviroment!!!
-    FILE *aplay = popen("aplay ros_restaurant/image_system/resources/camera-shutter3.wav", "w");
+    FILE *aplay = popen("aplay ../data/camera-shutter3.wav", "w");
     pclose(aplay);
 }
 
